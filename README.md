@@ -35,7 +35,7 @@ exec - 'выполнить', рисуется фрактал, программа
 # ОБЯЗАТЕЛЬНО числа отделять пробелами от квадратных скобок.
 ```
 ## How to use
-This application may help you in drawing different fractals using their decription (scroll down)
+This application may help you in drawing different fractals using their description (scroll down)
 
 Important points:
   - Only [0, 0.5] x [0, 0.5] area is rendered.
