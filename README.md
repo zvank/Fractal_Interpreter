@@ -40,7 +40,7 @@ This application may help you in drawing different fractals using their decripti
 Important points:
   - Only [0, 0.5] x [0, 0.5] area is rendered.
   - All the attractors should be approximately the same size, otherwise rendering ploblems may occure
-## Fractal decription
+## Fractal description
 ```
 !add = n1, n2;  - optional, if you need additional attractors, name of the main one is 'main'
 
