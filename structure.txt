@@ -1,26 +1,32 @@
+# опциональные строки, их порядок не важен
+# these are optional lines, you can write them in every order you want
 !add = n1, n2;  - опциональная строчка с дополнительными аттракторами, имя основного - 'main'
-                - optional, if you need additional attractors, name of the main one is 'main'
+				- optional, if you need additional attractors, name of the main one is 'main'
+!bounds = [ 0 1 ] [ 0 1 ];	- опциональная строчка с границами области рендеринга, по умолчанию [ 0 0.5 ] [ 0 0.5 ]
+							- также можно поставить '!bounds = auto;', программа сама определит границы фрактала
+							- optional, if you need to change canvas bounds, default ones are [ 0 0.5 ] [ 0 0.5 ]
+							- also you can use '!bounds = auto;' and the programme will determine the bounds
 
 # описание аттракторов
 # attractors decription
 
 n1 = {
-    n1 [ 1 1 0 1 ] [] [ 0.5 ] + 
-    ^   ^           ^   ^
-    |   |           |   |
-    |   |           |  коэф. домножения - можно [] для 1
-    |   |           |  multiply coefficient - default [] is for 1
-    |   |           |
-    |   |       вектор параллельного переноса - можно [] для нулевого
-    |   |       translation vector - default [] is for ( 0, 0 )
-    |   |
-    |   матрица - можно [] для E
-    |   matrix - default [] if for I
-    |
-    аттрактор - обязателен
-    attractor name is mandatory
+	n1 [ 1 1 0 1 ] [] [ 0.5 ] + 
+	^   ^           ^   ^
+	|   |           |   |
+	|   |           |  коэф. домножения - можно [] для 1
+	|   |           |  multiply coefficient - default [] is for 1
+	|   |           |
+	|   |       вектор параллельного переноса - можно [] для нулевого
+	|   |       translation vector - default [] is for ( 0, 0 )
+	|   |
+	|   матрица - можно [] для E
+	|   matrix - default [] if for I
+	|
+	аттрактор - обязателен
+	attractor name is mandatory
 
-    n2 [] [] []
+	n2 [] [] []
 }
 
 n2 = { n2 [] [] [ 0.5 ] + n2 [] [ 0.5 0 ] [ 0.5 ] + n2 [] [ 0.25 0.25 ] [ 0.5 ] }
@@ -28,7 +34,7 @@ n2 = { n2 [] [] [ 0.5 ] + n2 [] [ 0.5 0 ] [ 0.5 ] + n2 [] [ 0.25 0.25 ] [ 0.5 ] 
 main = { n2 [] [] [ 0.5 ] + n1 [] [ 0 1 ] [ 0.5 ] + main [] [ 0.5 0 ] [ 0.5 ] }
 
 exec - 'выполнить', рисуется фрактал, программа завершает работу.
-     - 'execute', main attractor is pictured, the programme stops.
+	- 'execute', main attractor is pictured, the programme stops.
 
 # ОБЯЗАТЕЛЬНО числа отделять пробелами от квадратных скобок.
 # you should print spaces between numbers and square brackets.
