@@ -4,11 +4,13 @@
 На вход программе подаётся описание фрактала (содержится ниже)
 
 Важные моменты:
-  - Рендерится только область \[0, 0.5\] x \[0, 0.5\].
   - При использовании нескольких аттракторов стоит создавать их примерно одинакового размера, иначе возможны проблемы с рендерингом.
 ## Описание фрактала
 ```
+# опциональные строки, их порядок не важен
 !add = n1, n2;  - опциональная строчка с дополнительными аттракторами, имя основного - 'main'
+!bounds = [ 0 1 ] [ 0 1 ];  - опциональная строчка с границами области рендеринга, по умолчанию [ 0 0.5 ] [ 0 0.5 ]
+                            - также можно поставить '!bounds = auto;', программа сама определит границы фрактала
 
 # описание аттракторов
 n1 = {
@@ -38,11 +40,13 @@ exec - 'выполнить', рисуется фрактал, программа
 This application may help you in drawing different fractals using their description (scroll down)
 
 Important points:
-  - Only [0, 0.5] x [0, 0.5] area is rendered.
   - All the attractors should be approximately the same size, otherwise rendering ploblems may occure
 ## Fractal description
 ```
+# these are optional lines, you can write them in any order
 !add = n1, n2;  - optional, if you need additional attractors, name of the main one is 'main'
+!bounds = [ 0 1 ] [ 0 1 ];  - optional, if you need to change canvas bounds, default ones are [ 0 0.5 ] [ 0 0.5 ]
+                            - also you can use '!bounds = auto;' and the programme will determine the bounds
 
 # attractors decription
 
