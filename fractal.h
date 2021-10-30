@@ -24,6 +24,7 @@ struct AffineTransform {
 };
 
 using AT = AffineTransform;
+using bound_t = std::pair<std::pair<double, double>, std::pair<double, double>>;
 
 Point apply(const Point& p, const AT& at) {
 	return Point(
@@ -51,14 +52,25 @@ private:
 	std::vector<double> dets;			// определители преобразований для нормальной(надеюсь) отрисовки
 	double total;						// сумма модулей определителей преобразований
 	int critical;						// если на отрисовку выделено меньше точек, она не производится.
+	bound_t b;							// границы области рендеринга
 
 public:
 	Fractal() {}
 	
+	void set_b(bound_t& b_) {
+		b = b_;
+		// std::cout << "-> v: ";
+		// for (auto x : dets) {
+		// 	std::cout << x << " ";
+		// }
+		// std::cout << "\n-> t: " << total << "\n";
+	}
+
 	void init(std::vector<Fractal*>& r, std::vector<AT>& rd) {
 		double max_det = 0;
 		refs = r;
 		ref_data = rd;
+		total = 0;
 		dets.resize(r.size());
 		for (size_t i = 0; i != refs.size(); ++i) {
 			auto det = rd[i].matrix[0] * rd[i].matrix[3] - rd[i].matrix[1] * rd[i].matrix[2];
@@ -69,15 +81,52 @@ public:
 		}
 		critical = max_det / (total - max_det) + 3;
 	}
-
-	void draw(std::vector<std::vector<bool>>& canvas, AT at = AT({ 1, 0, 0, 1, 0, 0, 1 }), int n = 1e6) {
-		// std::cout << "-> draw, n = " << n << "\n";
+	bound_t calc_b (	// считаем границы области рендеринга
+		AT at = AT({ 1, 0, 0, 1, 0, 0, 1 }), int n = 1e6, int d = 0
+	) const {
 		if (n < critical) {
 			auto p = apply({0, 0}, at);
-			if (p.x >= 0 && p.y >= 0 && p.x <= 0.999 && p.y <= 0.999) {
-				// std::cout << "-> new point on " << int(1000*p.x) << " " << int(1000*p.y) << "\n";
-				canvas[1000*p.x][1000*p.y] = true;
-				// std::cout << "-> continue\n";
+			return { { p.x, p.x }, { p.y, p.y } };
+		}
+		double temp_ = total;
+		bound_t res;
+		for (size_t i = 0; i != dets.size(); ++i) {
+			int k = (dets[i] / temp_) * n;
+			temp_ -= dets[i];
+			n -= k;
+			if (i == 0) {
+				res = refs[i]->calc_b(compose(at, ref_data[i]), k, d + 1);
+			} else {
+				auto temp = refs[i]->calc_b(compose(at, ref_data[i]), k, d + 1);
+				res.first.first = std::min(res.first.first, temp.first.first);
+				res.first.second = std::max(res.first.second, temp.first.second);
+				res.second.first = std::min(res.second.first, temp.second.first);
+				res.second.second = std::max(res.second.second, temp.second.second);
+			}
+		}
+		return res;
+	}
+
+	void draw(	// рисуем фрактал на двумерном булевом векторе
+		std::vector<std::vector<bool>>& canvas,
+		AT at = AT({ 1, 0, 0, 1, 0, 0, 1 }), int n = 1e6, bool t = false
+	) const {
+		if (n < critical) {
+			auto p = apply({0, 0}, at);
+			if (t) {
+				// std::cout << "-> p: " << p.x << " " << p.y << "\n";
+			}
+			if (
+				p.x >= b.first.first &&
+				p.y >= b.second.first &&
+				p.x <= b.first.second &&
+				p.y <= b.second.second
+			) {
+				canvas[
+					(p.x-b.first.first)/(b.first.second-b.first.first) * 500
+				][
+					(p.y-b.second.first)/(b.second.second-b.second.first) * 500
+				] = true;
 			}
 			return;
 		}
@@ -86,7 +135,14 @@ public:
 			int k = (dets[i] / temp_) * n;
 			temp_ -= dets[i];
 			n -= k;
-			refs[i]->draw(canvas, compose(at, ref_data[i]), k);
+			if (i == 3 && k <= 3) {
+				// std::cout << "-> draw [" << i << "] with " << k << " points\n";
+				auto p = apply({ 0, 0 }, at);
+				// std::cout << "-> p was " << p.x << " " << p.y << "\n";
+				refs[i]->draw(canvas, compose(at, ref_data[i]), k, true);
+			} else {
+				refs[i]->draw(canvas, compose(at, ref_data[i]), k, false);
+			}
 		}
 		return;
 	}

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <utility>
 #include "fractal.h"
 
 // #define DEBUG true
@@ -9,28 +10,53 @@ class FractalReader {
 private:
 	std::vector<Fractal> data;
 	std::map<std::string, int> indices;
+	bound_t b;
+	bool auto_b;
 
 public:
-	FractalReader() {
+	FractalReader() : auto_b(false), b({ { 0, 0.5 }, { 0, 0.5 } }) {
 		int i = 0;
 		indices["main"] = i++;
 		std::string s;
 		std::cin >> s;
-		if (s == "!add") {
-			std::cin >> s;
-			while (s.back() != ';') {
+		while (s[0] == '!'){
+			if (s == "!add") {
 				std::cin >> s;
-				if (s.back() == ',') {
-					s.pop_back();
-					indices[s] = i++;
-				} else if (s.back() == ';') {
-					s.pop_back();
-					indices[s] = i++;
-					s.push_back(';');
+				while (s.back() != ';') {
+					std::cin >> s;
+					if (s.back() == ',') {
+						s.pop_back();
+						indices[s] = i++;
+					} else if (s.back() == ';') {
+						s.pop_back();
+						indices[s] = i++;
+						s.push_back(';');
+					}
 				}
+				std::cout << "-> read !add\n";
+			} else if (s == "!bounds") {
+				std::cin >> s;
+				std::cin >> s;
+				if (s == "auto;") {
+					auto_b = true;
+				} else {
+					std::cin >> s;
+					b.first.first = std::stod(s);
+					std::cin >> s;
+					b.first.second = std::stod(s);
+					std::cin >> s;
+					std::cin >> s;
+					std::cin >> s;
+					b.second.first = std::stod(s);
+					std::cin >> s;
+					b.second.second = std::stod(s);
+					std::cin >> s;
+				}
+				std::cout << "-> read !bounds\n";
 			}
 			std::cin >> s;
 		}
+	
 		// в данный момент s содержит название первого описываемого аттрактора вне зависимости от того, был ли !add
 		data.resize(i);
 		while (s != "exec")	{
@@ -111,6 +137,12 @@ public:
 	}
 
 	std::vector<std::vector<bool>> run() {
+		if (auto_b) {
+			b = data[0].calc_b();
+		}
+		for (int i = 0; i != data.size(); ++i) {
+			data[i].set_b(b);
+		}
 		std::vector<std::vector<bool>> res(1001, std::vector<bool>(1001));
 		data[0].draw(res);
 		return res; 
