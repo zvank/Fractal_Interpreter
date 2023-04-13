@@ -73,9 +73,6 @@ void Fractal::draw(
 ) const {
     if (n < critical) {
         auto p = apply({0, 0}, at);
-        if (t) {
-            // std::cout << "-> p: " << p.x << " " << p.y << "\n";
-        }
         if (
             p.x >= b.left &&
             p.y >= b.lower &&
@@ -96,9 +93,7 @@ void Fractal::draw(
         temp_ -= dets[i];
         n -= k;
         if (i == 3 && k <= 3) {
-            // std::cout << "-> draw [" << i << "] with " << k << " points\n";
             auto p = apply({ 0, 0 }, at);
-            // std::cout << "-> p was " << p.x << " " << p.y << "\n";
             refs[i]->draw(canvas, compose(at, ref_data[i]), k, true);
         } else {
             refs[i]->draw(canvas, compose(at, ref_data[i]), k, false);

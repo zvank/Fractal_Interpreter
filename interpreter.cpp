@@ -62,43 +62,35 @@ void fill (int n, std::vector<Token>::iterator& curr, double* to) {
 }
 
 inline std::optional<Token> get_token(std::istream& in) {
-    std::cout << "bebra\n";
     while (in.peek() != std::char_traits<char>::eof() && isspace(in.peek())) {
-        std::cout << "1\n";
         char c;
         in.get(c);
     }
     if (in.peek() == std::char_traits<char>::eof()) {
-        std::cout << "2\n";
         return {};
     } else {
-        std::cout << "22\n";
         Token t;
         t.data_.push_back(' ');
         in.get(t.data_.back());
         if (t.data_.back() == '!') {
             while (isalpha(in.peek())) {
-                std::cout << "3\n";
                 t.data_.push_back(' ');
                 in.get(t.data_.back());
             }
             t.type_ = eTType::flag;
         } else if (isalpha(t.data_.back())) {
             while (isalpha(in.peek()) || isdigit(in.peek())) {
-                std::cout << "4\n";
                 t.data_.push_back(' ');
                 in.get(t.data_.back());
             }
             t.type_ = t.data_ == "exec" ? eTType::exec : eTType::name;
         } else if (isdigit(t.data_.back())) {
             while (isdigit(in.peek()) || in.peek() == '.') {
-                std::cout << "5\n";
                 t.data_.push_back(' ');
                 in.get(t.data_.back());
             }
             t.type_ = eTType::number;
         } else {
-            std::cout << "6\n";
             switch (t.data_.back()) {
                 case '+':
                     t.type_ = eTType::plus;
@@ -139,7 +131,6 @@ inline std::vector<Token> tokenise(std::istream& in) {
     std::vector<Token> res;
     while (in.peek() != std::char_traits<char>::eof() && (res.empty() || res.back().type_ != eTType::exec)) {
         auto token_opt = get_token(in);
-        std::cout << "a\n";
         if (token_opt.has_value()) {
             res.push_back(token_opt.value());
         }
@@ -152,11 +143,9 @@ FractalReader::FractalReader() : bound_({false, 0, 0.5, 0, 0.5}), data_({{}}), i
 
 void FractalReader::read(std::istream& in) {
     std::vector<Token> tokens = tokenise(in);
-    std::cout << "exited\n";
     auto current = tokens.begin();
     auto end = tokens.end();
     while (current != end) {
-        std::cout << "b\n";
         if (current->type_ == eTType::flag) {
             if (current->data_ == "!add") {
                 ++current;
