@@ -33,7 +33,9 @@ public:
 						s.push_back(';');
 					}
 				}
+#if DEBUG
 				std::cout << "-> read !add\n";
+#endif
 			} else if (s == "!bounds") {
 				std::cin >> s;
 				std::cin >> s;
@@ -52,7 +54,9 @@ public:
 					b.second.second = std::stod(s);
 					std::cin >> s;
 				}
+#if DEBUG
 				std::cout << "-> read !bounds\n";
+#endif
 			}
 			std::cin >> s;
 		}
@@ -136,14 +140,14 @@ public:
 		}
 	}
 
-	std::vector<std::vector<bool>> run() {
+	std::vector<std::vector<int>> run() {
 		if (auto_b) {
 			b = data[0].calc_b();
 		}
 		for (int i = 0; i != data.size(); ++i) {
 			data[i].set_b(b);
 		}
-		std::vector<std::vector<bool>> res(1001, std::vector<bool>(1001));
+		std::vector<std::vector<int>> res(1001, std::vector<int>(1001));
 		data[0].draw(res);
 		return res; 
 	}
