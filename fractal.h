@@ -107,8 +107,8 @@ public:
 		return res;
 	}
 
-	void draw(	// рисуем фрактал на двумерном булевом векторе
-		std::vector<std::vector<bool>>& canvas,
+	void draw(	// рисуем фрактал на двумерном векторе
+		std::vector<std::vector<int>>& canvas,
 		AT at = AT({ 1, 0, 0, 1, 0, 0, 1 }), int n = 1e6, bool t = false
 	) const {
 		if (n < critical) {
@@ -123,9 +123,9 @@ public:
 				p.y <= b.second.second
 			) {
 				canvas[
-					(p.x-b.first.first)/(b.first.second-b.first.first) * 500
+					(p.x-b.first.first)/(b.first.second-b.first.first) * 1000
 				][
-					(p.y-b.second.first)/(b.second.second-b.second.first) * 500
+					(p.y-b.second.first)/(b.second.second-b.second.first) * 1000
 				] = true;
 			}
 			return;
